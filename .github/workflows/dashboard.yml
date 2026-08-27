@@ -2,9 +2,12 @@ name: Dashboard PoC
 
 on:
   workflow_dispatch: {}
+  schedule:
+    # 毎日 09:00 JST (00:00 UTC) に実行し、バーンアップ用の日次スナップショットを蓄積する
+    - cron: "0 0 * * *"
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -28,7 +31,20 @@ jobs:
           DASHBOARD_ORG: itsuki-test-org
           DASHBOARD_PROJECT_NUMBER: "1"
           OUT_DIR: dist
+          SNAPSHOT_DIR: data/snapshots
         run: node scripts/dashboard/generate.js
+
+      - name: Commit snapshot if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/snapshots
+          if git diff --cached --quiet; then
+            echo "スナップショットに変更なし。コミットをスキップします。"
+          else
+            git commit -m "chore: 日次スナップショットを更新"
+            git push
+          fi
 
       - uses: actions/upload-pages-artifact@v3
         with:
