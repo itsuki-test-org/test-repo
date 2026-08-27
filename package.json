@@ -1,0 +1,8 @@
+{
+  "name": "dashboard-poc",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dashboard:generate": "node scripts/dashboard/generate.js"
+  }
+}
