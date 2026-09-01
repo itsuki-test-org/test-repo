@@ -1,0 +1,8 @@
+{
+  "date": "2026-09-01",
+  "byStatus": {
+    "Todo": 5,
+    "In Progress": 3,
+    "Done": 3
+  }
+}
